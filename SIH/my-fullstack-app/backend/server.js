@@ -26,13 +26,19 @@ app.use(express.json());
 
 // -------------------- MYSQL POOL --------------------
 const db = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "shalini",
-  password: process.env.DB_PASSWORD || "shalini2310",
-  database: process.env.DB_NAME || "virasatx",
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+
+  ssl: {
+    rejectUnauthorized: false
+  },
+
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
+  queueLimit: 0
 });
 
 // -------------------- AUTH MIDDLEWARE --------------------
