@@ -1,9 +1,7 @@
-import mysql.connector
+DB_HOST=mysql-e575eb2-sharmashalini2310-71ec.c.aivencloud.com
+DB_PORT=20964
+DB_USER=avnadmin
+DB_PASSWORD=YOUR_AIVEN_PASSWORD
+DB_NAME=defaultdb
 
-def get_db_connection():
-    return mysql.connector.connect(
-        host="localhost",
-        user="shalini",
-        password="shalini2310",
-        database="virasatx"
-    )
+JWT_SECRET=some-long-random-secret
