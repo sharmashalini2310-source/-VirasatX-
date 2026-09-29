@@ -787,7 +787,7 @@
         // ========== FASTAPI BACKEND CONNECTION TEST ==========
 async function testBackendConnection() {
     try {
-        const response = await fetch(`${API_URL}/`);
+        const API_URL = "https://virasatx.onrender.com";
         if (!response.ok) {
             throw new Error("Backend response error");
         }
