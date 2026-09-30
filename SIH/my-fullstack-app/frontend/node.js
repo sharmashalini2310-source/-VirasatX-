@@ -4,71 +4,108 @@
 // these functions. Keep your existing UI/CSS.
 // =========================================================
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = "https://virasatx.onrender.com";
 
 // Stores the logged-in user's database ID.
 let currentUserId = null;
 
 // -------------------- REGISTER --------------------
-async function registerUser(name, email, password) {
-    const response = await fetch(`${API_BASE}/api/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
-    });
+signupBtn.addEventListener("click", async () => {
 
-    const data = await response.json();
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
-    if (!response.ok) {
-        throw new Error(data.message || "Registration failed.");
+    if (!name || !email || !password) {
+        showToast("Fill all fields");
+        return;
     }
 
-    currentUserId = data.user.id;
-    localStorage.setItem("virasatxUserId", data.user.id);
-    localStorage.setItem("virasatxEmail", data.user.email);
+    try {
 
-    return data;
-}
+        await registerUser(name, email, password);
+
+        currentEmail = email;
+
+        await sendOTP(email);
+
+    } catch (err) {
+
+        console.error(err);
+        showToast(err.message);
+
+    }
+
+});
 
 // -------------------- LOGIN --------------------
-async function loginUser(email, password) {
-    const response = await fetch(`${API_BASE}/api/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-    });
+loginBtn.addEventListener("click", async () => {
 
-    const data = await response.json();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
-    if (!response.ok) {
-        throw new Error(data.message || "Login failed.");
+    if (!email || !password) {
+        showToast("Enter email and password");
+        return;
     }
 
-    currentUserId = data.user.id;
+    try {
 
-    localStorage.setItem("virasatxUserId", data.user.id);
-    localStorage.setItem("virasatxEmail", data.user.email);
-    localStorage.setItem("virasatxName", data.user.name);
+        const result = await loginUser(email, password);
 
-    return data;
-}
+        showToast("Login successful ✦");
+
+        localStorage.setItem("virasatxUserId", result.user.id);
+        localStorage.setItem("virasatxEmail", result.user.email);
+        localStorage.setItem("virasatxName", result.user.name);
+
+        themeScreen.classList.add("active");
+        loginScreen.classList.remove("active");
+
+    } catch (err) {
+
+        console.error(err);
+        showToast(err.message);
+
+    }
+
+});
 
 // -------------------- VERIFY EMAIL IN DATABASE --------------------
-async function markEmailVerified(email) {
-    const response = await fetch(`${API_BASE}/api/users/verify-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
+verifyOtpBtn.addEventListener("click", async () => {
+
+    let entered = "";
+
+    otpInputs.forEach(input => {
+        entered += input.value;
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.message || "Verification failed.");
+    if (entered.length !== 6) {
+        showToast("Enter complete OTP");
+        return;
     }
 
-    return data;
-}
+    if (entered !== generatedOTP) {
+        showToast("Invalid OTP");
+        return;
+    }
+
+    try {
+
+        await markEmailVerified(currentEmail);
+
+        showToast("Email verified successfully");
+
+        otpScreen.classList.remove("active");
+        themeScreen.classList.add("active");
+
+    } catch (err) {
+
+        console.error(err);
+        showToast(err.message);
+    }
+
+});
 
 // -------------------- LOAD THEMES --------------------
 async function loadThemesFromDatabase() {

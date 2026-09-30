@@ -493,11 +493,8 @@
         const EMAILJS_SERVICE_ID = "service_zw8cxdn";
         const EMAILJS_TEMPLATE_ID = "template_3dyj29b";
         emailjs.init(EMAILJS_PUBLIC_KEY);
-        const API_URL = "https://virasatx.onrender.com";
-        async function testBackendConnection() {
-    const response = await fetch("https://virasatx.onrender.com/api/login")
-}
-        // ========== DOM ==========
+        const API_BASE = "https://virasatx.onrender.com";
+       // ========== DOM ==========
         const introScreen = document.getElementById("introScreen");
         const loginScreen = document.getElementById("loginScreen");
         const otpScreen = document.getElementById("otpScreen");
@@ -784,19 +781,23 @@
         });
         trailerVideo.addEventListener("error", () => showToast("Trailer video could not be loaded"));
         console.log("%cVirāsatX Final Clean ✦", "color:#d9b45b;font-size:18px;font-weight:bold");
-        // ========== FASTAPI BACKEND CONNECTION TEST ==========
-async function testBackendConnection() {
+        // ========== BACKEND CONNECTION TEST ==========
+    async function testBackendConnection() {
     try {
-        const API_URL = "https://virasatx.onrender.com";
+        const response = await fetch("https://virasatx.onrender.com/");
+
         if (!response.ok) {
             throw new Error("Backend response error");
         }
+
         const data = await response.json();
-        console.log("✅ FastAPI Connected:", data);
+        console.log("✅ Backend Connected:", data);
+
     } catch (error) {
-        console.error("❌ FastAPI Connection Failed:", error);
+        console.error("❌ Backend Connection Failed:", error);
     }
 }
+
 testBackendConnection();
     </script>
 </body>
